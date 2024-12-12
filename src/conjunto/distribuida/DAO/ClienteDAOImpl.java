@@ -1,45 +1,67 @@
 package conjunto.distribuida.DAO;
 
-import conjunto.distribuida.entities.Cliente; 
-import java.util.ArrayList;
 import java.util.List;
+import javax.transaction.Transactional;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import conjunto.distribuida.entities.Cliente;
+
+
+//@Repository("beanClienteDAOImpl")
+@Repository
 public class ClienteDAOImpl implements ClienteDAO {
-    private List<Cliente> clientes = new ArrayList<>();
+	
+	// SQL : SELECT * FROM clientes;
+	// HQL : from Cliente; 1era forma
+	//HQL : SELECT cl FROM Cliente cl; 2da forma
+	
+	
+	@Autowired
+	private SessionFactory sessionFactory;
+	
+	
+	@Override
+	@Transactional
+	public List<Cliente> findAll() {
+		// TODO Auto-generated method stub
+		Session session = sessionFactory.getCurrentSession();
+		return session.createQuery("from Cliente", Cliente.class).getResultList();
+	}
 
-    @Override
-    public void insertar(Cliente cliente) {
-        clientes.add(cliente);
-    }
+	@Override
+	@Transactional
+	public Cliente findOne(int id) {
+		// TODO Auto-generated method stub
+		Session session = sessionFactory.getCurrentSession();
+		return session.get(Cliente.class, id);
+	}
 
-    @Override
-    public void actualizar(Cliente cliente) {
-        Cliente existente = obtenerPorId(cliente.getIdCliente()); 
-        if (existente != null) {
-            existente.setCedula(cliente.getCedula());
-            existente.setNombre(cliente.getNombre());
-            existente.setApellido(cliente.getApellido());
-            existente.setDireccion(cliente.getDireccion());
-            existente.setTelefono(cliente.getTelefono());
-            existente.setCorreo(cliente.getCorreo());
-        }
-    }
+	@Override
+	@Transactional
+	public void add(Cliente cliente) {
+		// TODO Auto-generated method stub
+		Session session = sessionFactory.getCurrentSession();
+		session.saveOrUpdate(cliente);
+	}
 
-    @Override
-    public void eliminar(int id) {
-        clientes.removeIf(cliente -> cliente.getIdCliente() == id); 
-    }
+	@Override
+	@Transactional
+	public void up(Cliente cliente) {
+		// TODO Auto-generated method stub
+		Session session = sessionFactory.getCurrentSession();
+		session.saveOrUpdate(cliente);
+	}
 
-    @Override
-    public Cliente obtenerPorId(int id) {
-        return clientes.stream()
-                .filter(cliente -> cliente.getIdCliente() == id) 
-                .findFirst()
-                .orElse(null);
-    }
+	@Override
+	@Transactional
+	public void del(int id) {
+		// TODO Auto-generated method stub
+		Session session = sessionFactory.getCurrentSession();
+		session.delete(findOne(id));
 
-    @Override
-    public List<Cliente> obtenerTodos() {
-        return new ArrayList<>(clientes); 
-    }
+	}
+
 }

@@ -1,12 +1,18 @@
 package conjunto.distribuida.DAO;
 
-import conjunto.distribuida.entities.*;
 import java.util.List;
 
+import conjunto.distribuida.entities.Cliente;
+
 public interface ClienteDAO {
-    void insertar(Cliente cliente);
-    void actualizar(Cliente cliente);
-    void eliminar(int id);
-    Cliente obtenerPorId(int id);
-    List<Cliente> obtenerTodos();
+	
+	public List<Cliente> findAll();
+	
+	public Cliente findOne(int id);
+	
+	public void add(Cliente cliente);
+	
+	public void up(Cliente cliente);
+
+	public void del(int id);
 }

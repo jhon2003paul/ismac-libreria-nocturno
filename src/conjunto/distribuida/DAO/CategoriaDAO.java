@@ -1,12 +1,17 @@
 package conjunto.distribuida.DAO;
 
-import conjunto.distribuida.entities.Categoria;
 import java.util.List;
+import conjunto.distribuida.entities.Categoria;
 
 public interface CategoriaDAO {
-    void insertar(Categoria categoria);
-    void actualizar(Categoria categoria);
-    void eliminar(int id);
-    Categoria obtenerPorId(int id);
-    List<Categoria> obtenerTodos();
+
+    public List<Categoria> findAll();  // Obtener todas las categorías
+
+    public Categoria findOne(int id);  // Obtener una categoría por su ID
+
+    public void add(Categoria categoria);  // Agregar una nueva categoría
+
+    public void up(Categoria categoria);   // Actualizar una categoría existente
+
+    public void del(int id);  // Eliminar una categoría por su ID
 }

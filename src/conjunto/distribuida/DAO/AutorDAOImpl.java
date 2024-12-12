@@ -1,45 +1,58 @@
 package conjunto.distribuida.DAO;
 
-import conjunto.distribuida.entities.Autor; 
-import java.util.ArrayList;
 import java.util.List;
 
+import javax.transaction.Transactional;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import conjunto.distribuida.entities.Autor;
+
+@Repository
 public class AutorDAOImpl implements AutorDAO {
-    private List<Autor> autores = new ArrayList<>();
+
+    @Autowired
+    private SessionFactory sessionFactory;
 
     @Override
-    public void insertar(Autor autor) {
-        autores.add(autor);
+    @Transactional
+    public List<Autor> findAll() {
+        // Se obtiene la sesión de Hibernate y se hace la consulta HQL
+        Session session = sessionFactory.getCurrentSession();
+        return session.createQuery("from Autor", Autor.class).getResultList();
     }
 
     @Override
-    public void actualizar(Autor autor) {
-        Autor existente = obtenerPorId(autor.getIdAutor());
-        if (existente != null) {
-            existente.setNombre(autor.getNombre());
-            existente.setApellido(autor.getApellido());
-            existente.setPais(autor.getPais());
-            existente.setDireccion(autor.getDireccion());
-            existente.setTelefono(autor.getTelefono());
-            existente.setCorreo(autor.getCorreo());
-        }
+    @Transactional
+    public Autor findOne(int id) {
+        // Recuperar un autor específico por su ID
+        Session session = sessionFactory.getCurrentSession();
+        return session.get(Autor.class, id);
     }
 
     @Override
-    public void eliminar(int id) {
-        autores.removeIf(autor -> autor.getIdAutor() == id);
+    @Transactional
+    public void add(Autor autor) {
+        // Guardar o actualizar un autor
+        Session session = sessionFactory.getCurrentSession();
+        session.saveOrUpdate(autor);
     }
 
     @Override
-    public Autor obtenerPorId(int id) {
-        return autores.stream()
-                .filter(autor -> autor.getIdAutor() == id)
-                .findFirst()
-                .orElse(null);
+    @Transactional
+    public void up(Autor autor) {
+        // Actualizar un autor existente
+        Session session = sessionFactory.getCurrentSession();
+        session.saveOrUpdate(autor);
     }
 
     @Override
-    public List<Autor> obtenerTodos() {
-        return new ArrayList<>(autores); // Retorna una copia de la lista
+    @Transactional
+    public void del(int id) {
+        // Eliminar un autor por su ID
+        Session session = sessionFactory.getCurrentSession();
+        session.delete(findOne(id));
     }
 }
