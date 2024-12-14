@@ -2,20 +2,50 @@ package conjunto.distribuida.entities;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "factura")
+
 public class Factura {
 	
+	//SQL: 1:1 <=> Java: @OneToOne 
+	//SQL: 1:N <=> Java: @ManyToOne , OneToMany
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id_factura")
 	private int idFactura;
+	@Column(name = "num_factura")
 	private String numFactura;
+	@Column(name = "fecha")
 	private Date fecha;
+	@Column(name = "total_neto")
 	private Double totalNeto;
+	@Column(name = "iva")
 	private Double iva;
+	@Column(name = "total")
 	private Double total;
+	
+	
 	//private int idCliente;
+	
+	@JoinColumn (name= "id_cliente")
+	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
+	
 	private Cliente cliente;
 	
 	public Factura() { }
 
-	public Factura(int idFactura, String numFactura, Date fecha, Double totalNeto, Double iva, Cliente cliente) {
+	public Factura(int idFactura, String numFactura, Date fecha, Double totalNeto, Double iva,Double total, Cliente cliente) {
 		
 		this.idFactura = idFactura;
 		this.numFactura = numFactura;
@@ -23,6 +53,7 @@ public class Factura {
 		this.totalNeto = totalNeto;
 		this.iva = iva;
 		this.cliente = cliente;
+		this.total=total;
 	}
 
 	
@@ -66,6 +97,16 @@ public class Factura {
 	public void setIva(Double iva) {
 		this.iva = iva;
 	}
+	
+	
+
+	public Double getTotal() {
+		return total;
+	}
+
+	public void setTotal(Double total) {
+		this.total = total;
+	}
 
 	public Cliente getCliente() {
 		return cliente;
@@ -77,14 +118,16 @@ public class Factura {
 		this.cliente = cliente;
 	}
 
-	
-	// to string
-	
 	@Override
 	public String toString() {
 		return "Factura [idFactura=" + idFactura + ", numFactura=" + numFactura + ", fecha=" + fecha + ", totalNeto="
-				+ totalNeto + ", iva=" + iva + ", cliente=" + cliente + "]";
+				+ totalNeto + ", iva=" + iva + ", total=" + total + ", cliente=" + cliente + "]";
 	}
+
+	
+	// to string
+	
+
 	
 	
 	
